@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<Configuration>
+	<Loggers>
+		<Logger level="WARN" name="com.liferay.log4j.experiment.Log4J2Util" />
+	</Loggers>
+</Configuration>
