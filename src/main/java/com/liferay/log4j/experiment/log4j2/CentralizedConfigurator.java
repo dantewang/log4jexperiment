@@ -3,33 +3,34 @@ package com.liferay.log4j.experiment.log4j2;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.script.ScriptManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CentralizedConfigurator implements Reconfigurable {
 
-	public CentralizedConfigurator(
-		LoggerContext loggerContext, AbstractConfiguration coreConfiguration) {
-
+	public CentralizedConfigurator(LoggerContext loggerContext) {
 		_loggerContext = loggerContext;
 
-		_rootNode = coreConfiguration.getRootNode();
+		_rootNode = new Node();
 
-		_coreConfiguration = coreConfiguration;
+		DefaultConfiguration defaultConfiguration = new DefaultConfiguration();
 
-		_configurations.add(coreConfiguration);
+		defaultConfiguration.initialize();
+
+		_pluginManager = defaultConfiguration.getPluginManager();
+
+		_scriptManager = defaultConfiguration.getScriptManager();
 	}
 
 	public void addConfiguration(AbstractConfiguration configuration) {
 		_mergeConfiguration(configuration);
-
-		_configurations.add(configuration);
 
 		_loggerContext.onChange(this);
 	}
@@ -38,8 +39,6 @@ public class CentralizedConfigurator implements Reconfigurable {
 		for (AbstractConfiguration configuration : configurations) {
 			_mergeConfiguration(configuration);
 		}
-
-		_configurations.addAll(configurations);
 
 		_loggerContext.onChange(this);
 	}
@@ -52,27 +51,22 @@ public class CentralizedConfigurator implements Reconfigurable {
 	private void _mergeConfiguration(AbstractConfiguration configuration) {
 		_mergeStrategy.mergeRootProperties(_rootNode, configuration);
 
-		_setupConfiguration(configuration);
+		configuration.setPluginManager(_pluginManager);
+
+		configuration.setScriptManager(_scriptManager);
+
+		configuration.setup();
 
 		final Node sourceRootNode = configuration.getRootNode();
 
 		_mergeStrategy.mergConfigurations(
-			_rootNode, sourceRootNode, _coreConfiguration.getPluginManager());
+			_rootNode, sourceRootNode, _pluginManager);
 	}
 
-	private void _setupConfiguration(AbstractConfiguration configuration) {
-		configuration.setPluginManager(_coreConfiguration.getPluginManager());
-
-		configuration.setScriptManager(_coreConfiguration.getScriptManager());
-
-		configuration.setup();
-	}
-
-	private final AbstractConfiguration _coreConfiguration;
-	private final List<AbstractConfiguration> _configurations =
-		new ArrayList<>();
 	private final LoggerContext _loggerContext;
 	private final MergeStrategy _mergeStrategy = new DefaultMergeStrategy();
+	private final PluginManager _pluginManager;
 	private final Node _rootNode;
+	private final ScriptManager _scriptManager;
 
 }
