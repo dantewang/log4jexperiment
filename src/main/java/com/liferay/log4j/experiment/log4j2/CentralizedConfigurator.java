@@ -45,7 +45,8 @@ public class CentralizedConfigurator implements Reconfigurable {
 
 	@Override
 	public Configuration reconfigure() {
-		return new CentralizedConfiguration(_loggerContext, _rootNode);
+		return new CentralizedConfiguration(
+			_loggerContext, new Node(_rootNode));
 	}
 
 	private void _mergeConfiguration(AbstractConfiguration configuration) {
