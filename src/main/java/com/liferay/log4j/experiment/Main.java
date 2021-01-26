@@ -19,8 +19,8 @@ public class Main {
 
 		Log4J2Util.printTestLogs("1");
 
-		//Log4J2Util.configLog4J2(
-		//	classLoader.getResource("portal-log4j2-ext.xml"));
+		Log4J2Util.configLog4J2(
+			classLoader.getResource("portal-log4j2-ext.xml"));
 
 		Log4J2Util.printTestLogs("2");
 	}
