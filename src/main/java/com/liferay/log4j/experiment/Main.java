@@ -2,6 +2,7 @@ package com.liferay.log4j.experiment;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import com.liferay.log4j.experiment.log4j2alt.Log4J2Util;
 
 public class Main {
 
@@ -9,30 +10,11 @@ public class Main {
 
 		ClassLoader classLoader = Main.class.getClassLoader();
 
-		// 1.x
-
-		Log4J1Util.printTestLogs();
-
-		long timestamp = System.currentTimeMillis();
-
-		Log4J1Util.configLog4J1(
-			classLoader.getResource("log4j1/portal-log4j1-ext.xml"));
-
-		for (int i = 0; i < 10000; i++) {
-			Log4J1Util.configLog4J1(_getLog4J1Ext(i));
-		}
-
-		timestamp = System.currentTimeMillis() - timestamp;
-
-		System.out.println(timestamp);
-
-		Log4J1Util.printTestLogs();
-
 		// 2.x
 
 		Log4J2Util.printTestLogs("1");
 
-		timestamp = System.currentTimeMillis();
+		long timestamp = System.currentTimeMillis();
 
 		Log4J2Util.configLog4J2(
 			classLoader.getResource("log4j2/portal-log4j2-ext.xml"));

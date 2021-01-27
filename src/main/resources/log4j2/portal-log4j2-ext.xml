@@ -2,6 +2,6 @@
 
 <Configuration>
 	<Loggers>
-		<Logger level="WARN" name="com.liferay.log4j.experiment.Log4J2Util" />
+		<Logger level="WARN" name="com.liferay.log4j.experiment.log4j2alt.Log4J2Util" />
 	</Loggers>
 </Configuration>
