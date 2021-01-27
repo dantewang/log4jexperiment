@@ -41,6 +41,18 @@ public class Log4J2Util {
 		}
 	}
 
+	public static void configLog4J2(InputStream inputStream) {
+		try {
+			XmlConfiguration xmlConfiguration = new XmlConfiguration(
+				_loggerContext, new ConfigurationSource(inputStream));
+
+			_centralizedConfigurator.addConfiguration(xmlConfiguration);
+		}
+		catch (IOException ioException) {
+			ioException.printStackTrace();
+		}
+	}
+
 	private static final LoggerContext _loggerContext;
 	private static final CentralizedConfigurator _centralizedConfigurator;
 

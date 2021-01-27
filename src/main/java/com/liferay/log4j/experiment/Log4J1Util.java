@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 
+import java.io.InputStream;
 import java.net.URL;
 
 public class Log4J1Util {
@@ -19,6 +20,12 @@ public class Log4J1Util {
 		DOMConfigurator domConfigurator = new DOMConfigurator();
 
 		domConfigurator.doConfigure(url, LogManager.getLoggerRepository());
+	}
+
+	public static void configLog4J1(InputStream inputStream) {
+		DOMConfigurator domConfigurator = new DOMConfigurator();
+
+		domConfigurator.doConfigure(inputStream, LogManager.getLoggerRepository());
 	}
 
 	static {
