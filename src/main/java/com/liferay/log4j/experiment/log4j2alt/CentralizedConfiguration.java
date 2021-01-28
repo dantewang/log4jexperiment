@@ -81,6 +81,7 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// Filter is defined. Since Filters are not named duplicates may be
 		// present.
 
+		addFilter(configuration.getFilter());
 	}
 
 	private void _aggregateLoggerConfigs(AbstractConfiguration configuration) {
@@ -142,6 +143,9 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// Properties from all configurations are aggregated.
 		// Duplicate properties replace those in previous configurations.
 
+		Map<String, String> properties = getProperties();
+
+		properties.putAll(configuration.getProperties());
 	}
 
 	private void _aggregateScripts(AbstractConfiguration configuration) {
