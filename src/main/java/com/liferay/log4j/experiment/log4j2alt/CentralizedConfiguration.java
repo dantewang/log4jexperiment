@@ -34,6 +34,12 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 	@Override
 	public void start() {
+		LoggerConfig rootLoggerConfig = getRootLogger();
+
+		rootLoggerConfig.start();
+
+		addLogger("", rootLoggerConfig);
+
 		setStarted();
 	}
 
