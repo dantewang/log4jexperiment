@@ -23,7 +23,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 		configuration.initialize();
 
-		_aggregateAttributes(configuration);
 		_aggregateProperties(configuration);
 		_aggregateFilters(configuration);
 		_aggregateScripts(configuration);
@@ -63,16 +62,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 				currentAppender.stop();
 			}
 		}
-	}
-
-	private void _aggregateAttributes(AbstractConfiguration configuration) {
-
-		// DefaultMergeStrategy:
-		// Aggregates the global configuration attributes with those in later
-		// configurations replacing those in previous configurations with the
-		// exception that the highest status level and the lowest
-		// monitorInterval greater than 0 will be used.
-
 	}
 
 	private void _aggregateFilters(AbstractConfiguration configuration) {
