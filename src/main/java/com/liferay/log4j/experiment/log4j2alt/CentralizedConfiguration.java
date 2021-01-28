@@ -6,6 +6,7 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.script.ScriptManager;
 
 import java.util.Map;
 import java.util.Objects;
@@ -47,6 +48,8 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 	@Override
 	public void start() {
+		scriptManager = new ScriptManager(this, getWatchManager());
+
 		LoggerConfig rootLoggerConfig = getRootLogger();
 
 		rootLoggerConfig.start();
