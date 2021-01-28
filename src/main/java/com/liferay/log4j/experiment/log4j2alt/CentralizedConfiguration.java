@@ -23,8 +23,21 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 		configuration.initialize();
 
-		_aggregateProperties(configuration);
-		_aggregateFilters(configuration);
+		// DefaultMergeStrategy:
+		// Properties from all configurations are aggregated.
+		// Duplicate properties replace those in previous configurations.
+
+		Map<String, String> properties = getProperties();
+
+		properties.putAll(configuration.getProperties());
+
+		// DefaultMergeStrategy:
+		// Filters are aggregated under a CompositeFilter if more than one
+		// Filter is defined. Since Filters are not named duplicates may be
+		// present.
+
+		addFilter(configuration.getFilter());
+
 		_aggregateScripts(configuration);
 		_aggregateAppenders(configuration);
 		_aggregateLoggerConfigs(configuration);
@@ -68,16 +81,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 				currentAppender.stop();
 			}
 		}
-	}
-
-	private void _aggregateFilters(AbstractConfiguration configuration) {
-
-		// DefaultMergeStrategy:
-		// Filters are aggregated under a CompositeFilter if more than one
-		// Filter is defined. Since Filters are not named duplicates may be
-		// present.
-
-		addFilter(configuration.getFilter());
 	}
 
 	private void _aggregateLoggerConfigs(AbstractConfiguration configuration) {
@@ -157,17 +160,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 				newLoggerConfigAppenders.get(appenderRef.getRef()),
 				appenderRef.getLevel(), appenderRef.getFilter());
 		}
-	}
-
-	private void _aggregateProperties(AbstractConfiguration configuration) {
-
-		// DefaultMergeStrategy:
-		// Properties from all configurations are aggregated.
-		// Duplicate properties replace those in previous configurations.
-
-		Map<String, String> properties = getProperties();
-
-		properties.putAll(configuration.getProperties());
 	}
 
 	private void _aggregateScripts(AbstractConfiguration configuration) {
