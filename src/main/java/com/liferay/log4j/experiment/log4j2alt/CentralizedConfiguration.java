@@ -22,39 +22,12 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 		configuration.initialize();
 
-		// TODO: check DefaultMergeStrategy's merge policy: copied below
-
-		/**
-		 * The default merge strategy for composite configurations.
-		 * <p>
-		 * The default merge strategy performs the merge according to the following rules:
-		 * <ol>
-		 * <li>Aggregates the global configuration attributes with those in later configurations replacing those in previous
-		 * configurations with the exception that the highest status level and the lowest monitorInterval greater than 0 will
-		 * be used.</li>
-		 * <li>Properties from all configurations are aggregated. Duplicate properties replace those in previous
-		 * configurations.</li>
-		 * <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters are not named
-		 * duplicates may be present.</li>
-		 * <li>Scripts and ScriptFile references are aggregated. Duplicate definitions replace those in previous
-		 * configurations.</li>
-		 * <li>Appenders are aggregated. Appenders with the same name are replaced by those in later configurations, including
-		 * all of the Appender's subcomponents.</li>
-		 * <li>Loggers are all aggregated. Logger attributes are individually merged with duplicates being replaced by those
-		 * in later configurations. Appender references on a Logger are aggregated with duplicates being replaced by those in
-		 * later configurations. Filters on a Logger are aggregated under a CompositeFilter if more than one Filter is defined.
-		 * Since Filters are not named duplicates may be present. Filters under Appender references included or discarded
-		 * depending on whether their parent Appender reference is kept or discarded.</li>
-		 * </ol>
-		 */
-
-		// TODO: create diff tree for those hard to merge in instances,
-		//  for example, appenders has many types, and the layout can not be
-		//  changed in an appender instance.
-		//  new nodes and merged nodes; unchanged nodes are not included
-
-		_mergeAppenders(configuration);
-		_mergeLoggerConfigs(configuration);
+		_aggregateAttributes(configuration);
+		_aggregateProperties(configuration);
+		_aggregateFilters(configuration);
+		_aggregateScripts(configuration);
+		_aggregateAppenders(configuration);
+		_aggregateLoggerConfigs(configuration);
 
 		_updateLoggers();
 	}
@@ -64,7 +37,13 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		setStarted();
 	}
 
-	private void _mergeAppenders(AbstractConfiguration configuration) {
+	private void _aggregateAppenders(AbstractConfiguration configuration) {
+
+		// DefaultMergeStrategy:
+		// Appenders are aggregated.
+		// Appenders with the same name are replaced by those in later
+		// configurations, including all of the Appender's subcomponents.
+
 		Map<String, Appender> appenders = getAppenders();
 
 		Map<String, Appender> newAppenders = configuration.getAppenders();
@@ -85,7 +64,40 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		}
 	}
 
-	private void _mergeLoggerConfigs(AbstractConfiguration configuration) {
+	private void _aggregateAttributes(AbstractConfiguration configuration) {
+
+		// DefaultMergeStrategy:
+		// Aggregates the global configuration attributes with those in later
+		// configurations replacing those in previous configurations with the
+		// exception that the highest status level and the lowest
+		// monitorInterval greater than 0 will be used.
+
+	}
+
+	private void _aggregateFilters(AbstractConfiguration configuration) {
+
+		// DefaultMergeStrategy:
+		// Filters are aggregated under a CompositeFilter if more than one
+		// Filter is defined. Since Filters are not named duplicates may be
+		// present.
+
+	}
+
+	private void _aggregateLoggerConfigs(AbstractConfiguration configuration) {
+
+		// TODO: implement merge strategy
+		// DefaultMergeStrategy:
+		// Loggers are all aggregated.
+		// Logger attributes are individually merged with duplicates being
+		// replaced by those in later configurations.
+		// Appender references on a Logger are aggregated with duplicates being
+		// replaced by those in later configurations.
+		// Filters on a Logger are aggregated under a CompositeFilter if more
+		// than one Filter is defined. Since Filters are not named duplicates
+		// may be present.
+		// Filters under Appender references included or discarded depending on
+		// whether their parent Appender reference is kept or discarded.
+
 		LoggerConfig newRootLoggerConfig = configuration.getRootLogger();
 
 		if (newRootLoggerConfig != null) {
@@ -110,8 +122,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 			LoggerConfig currentLoggerConfig = getLoggerConfig(
 				newLoggerConfigEntry.getKey());
 
-			// TODO: merge instead of replacement, LoggerConfig is mutable
-
 			if (currentLoggerConfig != null) {
 				removeLogger(newLoggerConfigEntry.getKey());
 
@@ -124,6 +134,22 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 			newLoggerConfig.start();
 		}
+	}
+
+	private void _aggregateProperties(AbstractConfiguration configuration) {
+
+		// DefaultMergeStrategy:
+		// Properties from all configurations are aggregated.
+		// Duplicate properties replace those in previous configurations.
+
+	}
+
+	private void _aggregateScripts(AbstractConfiguration configuration) {
+
+		// DefaultMergeStrategy:
+		// Scripts and ScriptFile references are aggregated.
+		// Duplicate definitions replace those in previous configurations.
+
 	}
 
 	private void _updateLoggers() {
