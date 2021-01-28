@@ -8,8 +8,10 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.script.ScriptManager;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
 
 public class CentralizedConfiguration extends AbstractConfiguration {
 
@@ -171,6 +173,28 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// Scripts and ScriptFile references are aggregated.
 		// Duplicate definitions replace those in previous configurations.
 
+		try {
+
+			// TODO: use ReflectionUtil in portal
+
+			Field scriptRunnersField = ScriptManager.class.getDeclaredField(
+				"scriptRunners");
+
+			scriptRunnersField.setAccessible(true);
+
+			ConcurrentMap<String, Object> currentScriptRunners =
+				(ConcurrentMap<String, Object>)scriptRunnersField.get(
+					getScriptManager());
+
+			ConcurrentMap<String, Object> newScriptRunners =
+				(ConcurrentMap<String, Object>)scriptRunnersField.get(
+					configuration.getScriptManager());
+
+			currentScriptRunners.putAll(newScriptRunners);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			reflectiveOperationException.printStackTrace();
+		}
 	}
 
 	private void _updateLoggers() {
