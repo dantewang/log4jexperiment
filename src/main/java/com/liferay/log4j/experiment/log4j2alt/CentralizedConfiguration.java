@@ -77,14 +77,15 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 			Appender newAppender = newAppenderEntry.getValue();
 
-			Appender currentAppender = appenders.put(
-				newAppenderEntry.getKey(), newAppender);
+			// Call removeAppender(String) to remove the Appender from logger
+			// configs and stop it
+
+			removeAppender(newAppenderEntry.getKey());
 
 			newAppender.start();
 
-			if (currentAppender != null) {
-				currentAppender.stop();
-			}
+			appenders.put(
+				newAppenderEntry.getKey(), newAppender);
 		}
 	}
 
