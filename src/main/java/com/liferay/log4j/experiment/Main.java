@@ -19,7 +19,7 @@ public class Main {
 		Log4J2Util.configLog4J2(
 			classLoader.getResource("log4j2/portal-log4j2-ext.xml"));
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			Log4J2Util.configLog4J2(_getLog4J2Ext(i));
 		}
 
