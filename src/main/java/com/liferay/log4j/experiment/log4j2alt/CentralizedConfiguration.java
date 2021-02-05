@@ -41,7 +41,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 		addFilter(configuration.getFilter());
 
-		_aggregateScripts(configuration);
 		_aggregateAppenders(configuration);
 		_aggregateLoggerConfigs(configuration);
 
@@ -50,8 +49,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 	@Override
 	public void start() {
-		scriptManager = new ScriptManager(this, getWatchManager());
-
 		LoggerConfig rootLoggerConfig = getRootLogger();
 
 		rootLoggerConfig.start();
@@ -165,36 +162,6 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 			currentLoggerConfig.addAppender(
 				newLoggerConfigAppenders.get(appenderRef.getRef()),
 				appenderRef.getLevel(), appenderRef.getFilter());
-		}
-	}
-
-	private void _aggregateScripts(AbstractConfiguration configuration) {
-
-		// DefaultMergeStrategy:
-		// Scripts and ScriptFile references are aggregated.
-		// Duplicate definitions replace those in previous configurations.
-
-		try {
-
-			// TODO: use ReflectionUtil in portal
-
-			Field scriptRunnersField = ScriptManager.class.getDeclaredField(
-				"scriptRunners");
-
-			scriptRunnersField.setAccessible(true);
-
-			ConcurrentMap<String, Object> currentScriptRunners =
-				(ConcurrentMap<String, Object>)scriptRunnersField.get(
-					getScriptManager());
-
-			ConcurrentMap<String, Object> newScriptRunners =
-				(ConcurrentMap<String, Object>)scriptRunnersField.get(
-					configuration.getScriptManager());
-
-			currentScriptRunners.putAll(newScriptRunners);
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			reflectiveOperationException.printStackTrace();
 		}
 	}
 
