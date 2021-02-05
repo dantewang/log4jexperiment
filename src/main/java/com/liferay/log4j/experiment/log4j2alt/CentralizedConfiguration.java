@@ -151,7 +151,13 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// than one Filter is defined. Since Filters are not named duplicates
 		// may be present.
 
-		currentLoggerConfig.addFilter(newLoggerConfig.getFilter());
+		Filter newFilter = newLoggerConfig.getFilter();
+
+		if (newFilter != null) {
+			newFilter.start();
+		}
+
+		currentLoggerConfig.addFilter(newFilter);
 
 		// Appender references on a Logger are aggregated with duplicates being
 		// replaced by those in later configurations.
