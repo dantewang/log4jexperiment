@@ -1,5 +1,6 @@
 package com.liferay.log4j.experiment.log4j2alt;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -100,7 +101,9 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// Loggers are all aggregated.
 		// See _aggregateLoggerConfig(LoggerConfig, LoggerConfig)
 
-		_aggregateLoggerConfig(getRootLogger(), configuration.getRootLogger());
+		_aggregateLoggerConfig(
+			getRootLogger(),
+			configuration.getLogger(LogManager.ROOT_LOGGER_NAME));
 
 		Map<String, LoggerConfig> newLoggerConfigs = configuration.getLoggers();
 
@@ -111,7 +114,7 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 			// Skip root logger
 
-			if (Objects.equals(name, "")) {
+			if (Objects.equals(name, LogManager.ROOT_LOGGER_NAME)) {
 				continue;
 			}
 
@@ -132,6 +135,10 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 	private void _aggregateLoggerConfig(
 		LoggerConfig currentLoggerConfig, LoggerConfig newLoggerConfig) {
 
+		if (newLoggerConfig == null) {
+			return;
+		}
+
 		// Logger attributes are individually merged with duplicates being
 		// replaced by those in later configurations.
 
@@ -150,7 +157,7 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// whether their parent Appender reference is kept or discarded.
 
 		Map<String, Appender> currentLoggerConfigAppenders =
-			newLoggerConfig.getAppenders();
+			currentLoggerConfig.getAppenders();
 
 		Map<String, Appender> newLoggerConfigAppenders =
 			newLoggerConfig.getAppenders();
