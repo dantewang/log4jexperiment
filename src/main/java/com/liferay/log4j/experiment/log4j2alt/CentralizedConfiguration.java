@@ -90,7 +90,7 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 		Filter newFilter = configuration.getFilter();
 
-		if ((newFilter != null) && !newFilter.isStarted()) {
+		if (newFilter != null) {
 			newFilter.start();
 		}
 
