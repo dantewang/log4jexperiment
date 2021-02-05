@@ -124,6 +124,8 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 			if (currentLoggerConfig != null) {
 				_aggregateLoggerConfig(currentLoggerConfig, newLoggerConfig);
+
+				continue;
 			}
 
 			addLogger(name, newLoggerConfig);
