@@ -1,6 +1,7 @@
 package com.liferay.log4j.experiment.log4j2alt;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -39,7 +40,13 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// Filter is defined. Since Filters are not named duplicates may be
 		// present.
 
-		addFilter(configuration.getFilter());
+		Filter newFilter = configuration.getFilter();
+
+		if ((newFilter != null) && !newFilter.isStarted()) {
+			newFilter.start();
+		}
+
+		addFilter(newFilter);
 
 		_aggregateAppenders(configuration);
 		_aggregateLoggerConfigs(configuration);
