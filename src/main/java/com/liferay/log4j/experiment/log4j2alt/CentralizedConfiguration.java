@@ -115,7 +115,7 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 				continue;
 			}
 
-			LoggerConfig currentLoggerConfig = getLoggerConfig(name);
+			LoggerConfig currentLoggerConfig = getLogger(name);
 
 			LoggerConfig newLoggerConfig = newLoggerConfigEntry.getValue();
 
