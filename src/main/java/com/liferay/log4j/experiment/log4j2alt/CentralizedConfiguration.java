@@ -60,24 +60,21 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 		// Appenders with the same name are replaced by those in later
 		// configurations, including all of the Appender's subcomponents.
 
-		Map<String, Appender> appenders = getAppenders();
-
 		Map<String, Appender> newAppenders = configuration.getAppenders();
 
 		for (Map.Entry<String, Appender> newAppenderEntry :
-				newAppenders.entrySet()) {
+			newAppenders.entrySet()) {
 
-			Appender newAppender = newAppenderEntry.getValue();
-
-			// Call removeAppender(String) to remove the Appender from logger
-			// configs and stop it
+			// Always call removeAppender(String) to try to remove the Appender
+			// with the same name from logger configs and stop it
 
 			removeAppender(newAppenderEntry.getKey());
 
+			Appender newAppender = newAppenderEntry.getValue();
+
 			newAppender.start();
 
-			appenders.put(
-				newAppenderEntry.getKey(), newAppender);
+			addAppender(newAppender);
 		}
 	}
 
