@@ -35,20 +35,8 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 
 		properties.putAll(configuration.getProperties());
 
-		// DefaultMergeStrategy:
-		// Filters are aggregated under a CompositeFilter if more than one
-		// Filter is defined. Since Filters are not named duplicates may be
-		// present.
-
-		Filter newFilter = configuration.getFilter();
-
-		if ((newFilter != null) && !newFilter.isStarted()) {
-			newFilter.start();
-		}
-
-		addFilter(newFilter);
-
 		_aggregateAppenders(configuration);
+		_aggregateFilters(configuration);
 		_aggregateLoggerConfigs(configuration);
 
 		_updateLoggers();
@@ -91,6 +79,22 @@ public class CentralizedConfiguration extends AbstractConfiguration {
 			appenders.put(
 				newAppenderEntry.getKey(), newAppender);
 		}
+	}
+
+	private void _aggregateFilters(AbstractConfiguration configuration) {
+
+		// DefaultMergeStrategy:
+		// Filters are aggregated under a CompositeFilter if more than one
+		// Filter is defined. Since Filters are not named duplicates may be
+		// present.
+
+		Filter newFilter = configuration.getFilter();
+
+		if ((newFilter != null) && !newFilter.isStarted()) {
+			newFilter.start();
+		}
+
+		addFilter(newFilter);
 	}
 
 	private void _aggregateLoggerConfigs(AbstractConfiguration configuration) {
